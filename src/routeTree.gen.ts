@@ -27,6 +27,8 @@ import { Route as EnseignantEtudiantsRouteImport } from './routes/enseignant.etu
 import { Route as EnseignantDashboardRouteImport } from './routes/enseignant.dashboard'
 import { Route as AdminUtilisateursRouteImport } from './routes/admin.utilisateurs'
 import { Route as AdminSoutenancesRouteImport } from './routes/admin.soutenances'
+import { Route as AdminSallesRouteImport } from './routes/admin.salles'
+import { Route as AdminDocumentsRouteImport } from './routes/admin.documents'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminAffectationsRouteImport } from './routes/admin.affectations'
 
@@ -121,6 +123,16 @@ const AdminSoutenancesRoute = AdminSoutenancesRouteImport.update({
   path: '/soutenances',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSallesRoute = AdminSallesRouteImport.update({
+  id: '/salles',
+  path: '/salles',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminDocumentsRoute = AdminDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -141,6 +153,8 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/admin/affectations': typeof AdminAffectationsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/documents': typeof AdminDocumentsRoute
+  '/admin/salles': typeof AdminSallesRoute
   '/admin/soutenances': typeof AdminSoutenancesRoute
   '/admin/utilisateurs': typeof AdminUtilisateursRoute
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
@@ -163,6 +177,8 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/admin/affectations': typeof AdminAffectationsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/documents': typeof AdminDocumentsRoute
+  '/admin/salles': typeof AdminSallesRoute
   '/admin/soutenances': typeof AdminSoutenancesRoute
   '/admin/utilisateurs': typeof AdminUtilisateursRoute
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
@@ -186,6 +202,8 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/admin/affectations': typeof AdminAffectationsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/documents': typeof AdminDocumentsRoute
+  '/admin/salles': typeof AdminSallesRoute
   '/admin/soutenances': typeof AdminSoutenancesRoute
   '/admin/utilisateurs': typeof AdminUtilisateursRoute
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
@@ -210,6 +228,8 @@ export interface FileRouteTypes {
     | '/register'
     | '/admin/affectations'
     | '/admin/dashboard'
+    | '/admin/documents'
+    | '/admin/salles'
     | '/admin/soutenances'
     | '/admin/utilisateurs'
     | '/enseignant/dashboard'
@@ -232,6 +252,8 @@ export interface FileRouteTypes {
     | '/register'
     | '/admin/affectations'
     | '/admin/dashboard'
+    | '/admin/documents'
+    | '/admin/salles'
     | '/admin/soutenances'
     | '/admin/utilisateurs'
     | '/enseignant/dashboard'
@@ -254,6 +276,8 @@ export interface FileRouteTypes {
     | '/register'
     | '/admin/affectations'
     | '/admin/dashboard'
+    | '/admin/documents'
+    | '/admin/salles'
     | '/admin/soutenances'
     | '/admin/utilisateurs'
     | '/enseignant/dashboard'
@@ -405,6 +429,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSoutenancesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/salles': {
+      id: '/admin/salles'
+      path: '/salles'
+      fullPath: '/admin/salles'
+      preLoaderRoute: typeof AdminSallesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/documents': {
+      id: '/admin/documents'
+      path: '/documents'
+      fullPath: '/admin/documents'
+      preLoaderRoute: typeof AdminDocumentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/dashboard'
@@ -425,6 +463,8 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminAffectationsRoute: typeof AdminAffectationsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminDocumentsRoute: typeof AdminDocumentsRoute
+  AdminSallesRoute: typeof AdminSallesRoute
   AdminSoutenancesRoute: typeof AdminSoutenancesRoute
   AdminUtilisateursRoute: typeof AdminUtilisateursRoute
 }
@@ -432,6 +472,8 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminAffectationsRoute: AdminAffectationsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminDocumentsRoute: AdminDocumentsRoute,
+  AdminSallesRoute: AdminSallesRoute,
   AdminSoutenancesRoute: AdminSoutenancesRoute,
   AdminUtilisateursRoute: AdminUtilisateursRoute,
 }
