@@ -21,6 +21,7 @@ import { Route as EtudiantProjetRouteImport } from './routes/etudiant.projet'
 import { Route as EtudiantEvaluationsRouteImport } from './routes/etudiant.evaluations'
 import { Route as EtudiantDashboardRouteImport } from './routes/etudiant.dashboard'
 import { Route as EnseignantSujetsRouteImport } from './routes/enseignant.sujets'
+import { Route as EnseignantEvaluationsRouteImport } from './routes/enseignant.evaluations'
 import { Route as EnseignantEtudiantsRouteImport } from './routes/enseignant.etudiants'
 import { Route as EnseignantDashboardRouteImport } from './routes/enseignant.dashboard'
 
@@ -84,6 +85,11 @@ const EnseignantSujetsRoute = EnseignantSujetsRouteImport.update({
   path: '/sujets',
   getParentRoute: () => EnseignantRoute,
 } as any)
+const EnseignantEvaluationsRoute = EnseignantEvaluationsRouteImport.update({
+  id: '/evaluations',
+  path: '/evaluations',
+  getParentRoute: () => EnseignantRoute,
+} as any)
 const EnseignantEtudiantsRoute = EnseignantEtudiantsRouteImport.update({
   id: '/etudiants',
   path: '/etudiants',
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
   '/enseignant/etudiants': typeof EnseignantEtudiantsRoute
+  '/enseignant/evaluations': typeof EnseignantEvaluationsRoute
   '/enseignant/sujets': typeof EnseignantSujetsRoute
   '/etudiant/dashboard': typeof EtudiantDashboardRoute
   '/etudiant/evaluations': typeof EtudiantEvaluationsRoute
@@ -120,6 +127,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
   '/enseignant/etudiants': typeof EnseignantEtudiantsRoute
+  '/enseignant/evaluations': typeof EnseignantEvaluationsRoute
   '/enseignant/sujets': typeof EnseignantSujetsRoute
   '/etudiant/dashboard': typeof EtudiantDashboardRoute
   '/etudiant/evaluations': typeof EtudiantEvaluationsRoute
@@ -137,6 +145,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
   '/enseignant/etudiants': typeof EnseignantEtudiantsRoute
+  '/enseignant/evaluations': typeof EnseignantEvaluationsRoute
   '/enseignant/sujets': typeof EnseignantSujetsRoute
   '/etudiant/dashboard': typeof EtudiantDashboardRoute
   '/etudiant/evaluations': typeof EtudiantEvaluationsRoute
@@ -155,6 +164,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/enseignant/dashboard'
     | '/enseignant/etudiants'
+    | '/enseignant/evaluations'
     | '/enseignant/sujets'
     | '/etudiant/dashboard'
     | '/etudiant/evaluations'
@@ -171,6 +181,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/enseignant/dashboard'
     | '/enseignant/etudiants'
+    | '/enseignant/evaluations'
     | '/enseignant/sujets'
     | '/etudiant/dashboard'
     | '/etudiant/evaluations'
@@ -187,6 +198,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/enseignant/dashboard'
     | '/enseignant/etudiants'
+    | '/enseignant/evaluations'
     | '/enseignant/sujets'
     | '/etudiant/dashboard'
     | '/etudiant/evaluations'
@@ -290,6 +302,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnseignantSujetsRouteImport
       parentRoute: typeof EnseignantRoute
     }
+    '/enseignant/evaluations': {
+      id: '/enseignant/evaluations'
+      path: '/evaluations'
+      fullPath: '/enseignant/evaluations'
+      preLoaderRoute: typeof EnseignantEvaluationsRouteImport
+      parentRoute: typeof EnseignantRoute
+    }
     '/enseignant/etudiants': {
       id: '/enseignant/etudiants'
       path: '/etudiants'
@@ -310,12 +329,14 @@ declare module '@tanstack/react-router' {
 interface EnseignantRouteChildren {
   EnseignantDashboardRoute: typeof EnseignantDashboardRoute
   EnseignantEtudiantsRoute: typeof EnseignantEtudiantsRoute
+  EnseignantEvaluationsRoute: typeof EnseignantEvaluationsRoute
   EnseignantSujetsRoute: typeof EnseignantSujetsRoute
 }
 
 const EnseignantRouteChildren: EnseignantRouteChildren = {
   EnseignantDashboardRoute: EnseignantDashboardRoute,
   EnseignantEtudiantsRoute: EnseignantEtudiantsRoute,
+  EnseignantEvaluationsRoute: EnseignantEvaluationsRoute,
   EnseignantSujetsRoute: EnseignantSujetsRoute,
 }
 
