@@ -1,0 +1,106 @@
+import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
+import { USERS, CONVERSATIONS, NOTIFICATIONS, type User, type Conversation, type Notification, type Message } from "./mock-data";
+
+// ----- Auth -----
+interface AuthContextValue {
+  currentUser: User | null;
+  login: (email: string, password: string) => User | null;
+  loginAs: (role: "etudiant" | "enseignant" | "admin") => User;
+  logout: () => void;
+  isAuthenticated: boolean;
+}
+const AuthContext = createContext<AuthContextValue | null>(null);
+
+// ----- Chat -----
+interface ChatContextValue {
+  conversations: Conversation[];
+  activeId: string | null;
+  setActiveId: (id: string | null) => void;
+  isOpen: boolean;
+  toggle: () => void;
+  close: () => void;
+  open: () => void;
+  sendMessage: (conversationId: string, text: string) => void;
+  unreadCount: number;
+  markRead: (id: string) => void;
+}
+const ChatContext = createContext<ChatContextValue | null>(null);
+
+// ----- Notifications -----
+interface NotifContextValue {
+  notifications: Notification[];
+  unreadCount: number;
+  markAsRead: (id: string) => void;
+  markAllRead: () => void;
+}
+const NotifContext = createContext<NotifContextValue | null>(null);
+
+export function AppProviders({ children }: { children: ReactNode }) {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [conversations, setConversations] = useState<Conversation[]>(CONVERSATIONS);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>(NOTIFICATIONS);
+
+  const login = useCallback((email: string, _password: string) => {
+    const u = USERS.find((x) => x.email.toLowerCase() === email.toLowerCase()) ?? null;
+    if (u) setCurrentUser(u);
+    return u;
+  }, []);
+
+  const loginAs = useCallback((role: "etudiant" | "enseignant" | "admin") => {
+    const u = role === "etudiant" ? USERS.find(x => x.id === "u1")! : role === "enseignant" ? USERS.find(x => x.id === "e1")! : USERS.find(x => x.id === "a1")!;
+    setCurrentUser(u);
+    return u;
+  }, []);
+
+  const logout = useCallback(() => setCurrentUser(null), []);
+
+  const sendMessage = useCallback((conversationId: string, text: string) => {
+    setConversations((prev) =>
+      prev.map((c) => {
+        if (c.id !== conversationId) return c;
+        const msg: Message = { id: `m${Date.now()}`, from: "Vous", text, at: "À l'instant", mine: true };
+        return { ...c, messages: [...c.messages, msg], lastMessage: text, lastAt: "À l'instant" };
+      })
+    );
+  }, []);
+
+  const markRead = useCallback((id: string) => {
+    setConversations((prev) => prev.map((c) => (c.id === id ? { ...c, unread: 0 } : c)));
+  }, []);
+
+  const unreadCount = conversations.reduce((a, c) => a + c.unread, 0);
+  const notifUnread = notifications.filter((n) => !n.read).length;
+
+  const markAsRead = useCallback((id: string) => {
+    setNotifications((p) => p.map((n) => (n.id === id ? { ...n, read: true } : n)));
+  }, []);
+  const markAllRead = useCallback(() => setNotifications((p) => p.map((n) => ({ ...n, read: true }))), []);
+
+  return (
+    <AuthContext.Provider value={{ currentUser, login, loginAs, logout, isAuthenticated: !!currentUser }}>
+      <ChatContext.Provider value={{ conversations, activeId, setActiveId, isOpen, toggle: () => setIsOpen(o => !o), close: () => setIsOpen(false), open: () => setIsOpen(true), sendMessage, unreadCount, markRead }}>
+        <NotifContext.Provider value={{ notifications, unreadCount: notifUnread, markAsRead, markAllRead }}>
+          {children}
+        </NotifContext.Provider>
+      </ChatContext.Provider>
+    </AuthContext.Provider>
+  );
+}
+
+export const useAuth = () => {
+  const v = useContext(AuthContext);
+  if (!v) throw new Error("AuthContext missing");
+  return v;
+};
+export const useChat = () => {
+  const v = useContext(ChatContext);
+  if (!v) throw new Error("ChatContext missing");
+  return v;
+};
+export const useNotifications = () => {
+  const v = useContext(NotifContext);
+  if (!v) throw new Error("NotifContext missing");
+  return v;
+};
