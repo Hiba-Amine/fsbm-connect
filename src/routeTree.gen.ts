@@ -21,6 +21,7 @@ import { Route as EtudiantProjetRouteImport } from './routes/etudiant.projet'
 import { Route as EtudiantEvaluationsRouteImport } from './routes/etudiant.evaluations'
 import { Route as EtudiantDashboardRouteImport } from './routes/etudiant.dashboard'
 import { Route as EnseignantSujetsRouteImport } from './routes/enseignant.sujets'
+import { Route as EnseignantJuryEvaluationsRouteImport } from './routes/enseignant.jury-evaluations'
 import { Route as EnseignantEvaluationsRouteImport } from './routes/enseignant.evaluations'
 import { Route as EnseignantEtudiantsRouteImport } from './routes/enseignant.etudiants'
 import { Route as EnseignantDashboardRouteImport } from './routes/enseignant.dashboard'
@@ -85,6 +86,12 @@ const EnseignantSujetsRoute = EnseignantSujetsRouteImport.update({
   path: '/sujets',
   getParentRoute: () => EnseignantRoute,
 } as any)
+const EnseignantJuryEvaluationsRoute =
+  EnseignantJuryEvaluationsRouteImport.update({
+    id: '/jury-evaluations',
+    path: '/jury-evaluations',
+    getParentRoute: () => EnseignantRoute,
+  } as any)
 const EnseignantEvaluationsRoute = EnseignantEvaluationsRouteImport.update({
   id: '/evaluations',
   path: '/evaluations',
@@ -111,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
   '/enseignant/etudiants': typeof EnseignantEtudiantsRoute
   '/enseignant/evaluations': typeof EnseignantEvaluationsRoute
+  '/enseignant/jury-evaluations': typeof EnseignantJuryEvaluationsRoute
   '/enseignant/sujets': typeof EnseignantSujetsRoute
   '/etudiant/dashboard': typeof EtudiantDashboardRoute
   '/etudiant/evaluations': typeof EtudiantEvaluationsRoute
@@ -128,6 +136,7 @@ export interface FileRoutesByTo {
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
   '/enseignant/etudiants': typeof EnseignantEtudiantsRoute
   '/enseignant/evaluations': typeof EnseignantEvaluationsRoute
+  '/enseignant/jury-evaluations': typeof EnseignantJuryEvaluationsRoute
   '/enseignant/sujets': typeof EnseignantSujetsRoute
   '/etudiant/dashboard': typeof EtudiantDashboardRoute
   '/etudiant/evaluations': typeof EtudiantEvaluationsRoute
@@ -146,6 +155,7 @@ export interface FileRoutesById {
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
   '/enseignant/etudiants': typeof EnseignantEtudiantsRoute
   '/enseignant/evaluations': typeof EnseignantEvaluationsRoute
+  '/enseignant/jury-evaluations': typeof EnseignantJuryEvaluationsRoute
   '/enseignant/sujets': typeof EnseignantSujetsRoute
   '/etudiant/dashboard': typeof EtudiantDashboardRoute
   '/etudiant/evaluations': typeof EtudiantEvaluationsRoute
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
     | '/enseignant/dashboard'
     | '/enseignant/etudiants'
     | '/enseignant/evaluations'
+    | '/enseignant/jury-evaluations'
     | '/enseignant/sujets'
     | '/etudiant/dashboard'
     | '/etudiant/evaluations'
@@ -182,6 +193,7 @@ export interface FileRouteTypes {
     | '/enseignant/dashboard'
     | '/enseignant/etudiants'
     | '/enseignant/evaluations'
+    | '/enseignant/jury-evaluations'
     | '/enseignant/sujets'
     | '/etudiant/dashboard'
     | '/etudiant/evaluations'
@@ -199,6 +211,7 @@ export interface FileRouteTypes {
     | '/enseignant/dashboard'
     | '/enseignant/etudiants'
     | '/enseignant/evaluations'
+    | '/enseignant/jury-evaluations'
     | '/enseignant/sujets'
     | '/etudiant/dashboard'
     | '/etudiant/evaluations'
@@ -302,6 +315,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnseignantSujetsRouteImport
       parentRoute: typeof EnseignantRoute
     }
+    '/enseignant/jury-evaluations': {
+      id: '/enseignant/jury-evaluations'
+      path: '/jury-evaluations'
+      fullPath: '/enseignant/jury-evaluations'
+      preLoaderRoute: typeof EnseignantJuryEvaluationsRouteImport
+      parentRoute: typeof EnseignantRoute
+    }
     '/enseignant/evaluations': {
       id: '/enseignant/evaluations'
       path: '/evaluations'
@@ -330,6 +350,7 @@ interface EnseignantRouteChildren {
   EnseignantDashboardRoute: typeof EnseignantDashboardRoute
   EnseignantEtudiantsRoute: typeof EnseignantEtudiantsRoute
   EnseignantEvaluationsRoute: typeof EnseignantEvaluationsRoute
+  EnseignantJuryEvaluationsRoute: typeof EnseignantJuryEvaluationsRoute
   EnseignantSujetsRoute: typeof EnseignantSujetsRoute
 }
 
@@ -337,6 +358,7 @@ const EnseignantRouteChildren: EnseignantRouteChildren = {
   EnseignantDashboardRoute: EnseignantDashboardRoute,
   EnseignantEtudiantsRoute: EnseignantEtudiantsRoute,
   EnseignantEvaluationsRoute: EnseignantEvaluationsRoute,
+  EnseignantJuryEvaluationsRoute: EnseignantJuryEvaluationsRoute,
   EnseignantSujetsRoute: EnseignantSujetsRoute,
 }
 
