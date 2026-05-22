@@ -26,7 +26,9 @@ import { Route as EnseignantEvaluationsRouteImport } from './routes/enseignant.e
 import { Route as EnseignantEtudiantsRouteImport } from './routes/enseignant.etudiants'
 import { Route as EnseignantDashboardRouteImport } from './routes/enseignant.dashboard'
 import { Route as AdminUtilisateursRouteImport } from './routes/admin.utilisateurs'
+import { Route as AdminSoutenancesRouteImport } from './routes/admin.soutenances'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AdminAffectationsRouteImport } from './routes/admin.affectations'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -114,9 +116,19 @@ const AdminUtilisateursRoute = AdminUtilisateursRouteImport.update({
   path: '/utilisateurs',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminSoutenancesRoute = AdminSoutenancesRouteImport.update({
+  id: '/soutenances',
+  path: '/soutenances',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAffectationsRoute = AdminAffectationsRouteImport.update({
+  id: '/affectations',
+  path: '/affectations',
   getParentRoute: () => AdminRoute,
 } as any)
 
@@ -127,7 +139,9 @@ export interface FileRoutesByFullPath {
   '/etudiant': typeof EtudiantRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/admin/affectations': typeof AdminAffectationsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/soutenances': typeof AdminSoutenancesRoute
   '/admin/utilisateurs': typeof AdminUtilisateursRoute
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
   '/enseignant/etudiants': typeof EnseignantEtudiantsRoute
@@ -147,7 +161,9 @@ export interface FileRoutesByTo {
   '/etudiant': typeof EtudiantRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/admin/affectations': typeof AdminAffectationsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/soutenances': typeof AdminSoutenancesRoute
   '/admin/utilisateurs': typeof AdminUtilisateursRoute
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
   '/enseignant/etudiants': typeof EnseignantEtudiantsRoute
@@ -168,7 +184,9 @@ export interface FileRoutesById {
   '/etudiant': typeof EtudiantRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/admin/affectations': typeof AdminAffectationsRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/soutenances': typeof AdminSoutenancesRoute
   '/admin/utilisateurs': typeof AdminUtilisateursRoute
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
   '/enseignant/etudiants': typeof EnseignantEtudiantsRoute
@@ -190,7 +208,9 @@ export interface FileRouteTypes {
     | '/etudiant'
     | '/login'
     | '/register'
+    | '/admin/affectations'
     | '/admin/dashboard'
+    | '/admin/soutenances'
     | '/admin/utilisateurs'
     | '/enseignant/dashboard'
     | '/enseignant/etudiants'
@@ -210,7 +230,9 @@ export interface FileRouteTypes {
     | '/etudiant'
     | '/login'
     | '/register'
+    | '/admin/affectations'
     | '/admin/dashboard'
+    | '/admin/soutenances'
     | '/admin/utilisateurs'
     | '/enseignant/dashboard'
     | '/enseignant/etudiants'
@@ -230,7 +252,9 @@ export interface FileRouteTypes {
     | '/etudiant'
     | '/login'
     | '/register'
+    | '/admin/affectations'
     | '/admin/dashboard'
+    | '/admin/soutenances'
     | '/admin/utilisateurs'
     | '/enseignant/dashboard'
     | '/enseignant/etudiants'
@@ -374,6 +398,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminUtilisateursRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/soutenances': {
+      id: '/admin/soutenances'
+      path: '/soutenances'
+      fullPath: '/admin/soutenances'
+      preLoaderRoute: typeof AdminSoutenancesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/dashboard': {
       id: '/admin/dashboard'
       path: '/dashboard'
@@ -381,16 +412,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/affectations': {
+      id: '/admin/affectations'
+      path: '/affectations'
+      fullPath: '/admin/affectations'
+      preLoaderRoute: typeof AdminAffectationsRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminAffectationsRoute: typeof AdminAffectationsRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminSoutenancesRoute: typeof AdminSoutenancesRoute
   AdminUtilisateursRoute: typeof AdminUtilisateursRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAffectationsRoute: AdminAffectationsRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminSoutenancesRoute: AdminSoutenancesRoute,
   AdminUtilisateursRoute: AdminUtilisateursRoute,
 }
 
