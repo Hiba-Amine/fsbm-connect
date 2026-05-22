@@ -25,6 +25,7 @@ import { Route as EnseignantJuryEvaluationsRouteImport } from './routes/enseigna
 import { Route as EnseignantEvaluationsRouteImport } from './routes/enseignant.evaluations'
 import { Route as EnseignantEtudiantsRouteImport } from './routes/enseignant.etudiants'
 import { Route as EnseignantDashboardRouteImport } from './routes/enseignant.dashboard'
+import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -107,14 +108,20 @@ const EnseignantDashboardRoute = EnseignantDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => EnseignantRoute,
 } as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/enseignant': typeof EnseignantRouteWithChildren
   '/etudiant': typeof EtudiantRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
   '/enseignant/etudiants': typeof EnseignantEtudiantsRoute
   '/enseignant/evaluations': typeof EnseignantEvaluationsRoute
@@ -128,11 +135,12 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/enseignant': typeof EnseignantRouteWithChildren
   '/etudiant': typeof EtudiantRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
   '/enseignant/etudiants': typeof EnseignantEtudiantsRoute
   '/enseignant/evaluations': typeof EnseignantEvaluationsRoute
@@ -147,11 +155,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/enseignant': typeof EnseignantRouteWithChildren
   '/etudiant': typeof EtudiantRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
   '/enseignant/etudiants': typeof EnseignantEtudiantsRoute
   '/enseignant/evaluations': typeof EnseignantEvaluationsRoute
@@ -172,6 +181,7 @@ export interface FileRouteTypes {
     | '/etudiant'
     | '/login'
     | '/register'
+    | '/admin/dashboard'
     | '/enseignant/dashboard'
     | '/enseignant/etudiants'
     | '/enseignant/evaluations'
@@ -190,6 +200,7 @@ export interface FileRouteTypes {
     | '/etudiant'
     | '/login'
     | '/register'
+    | '/admin/dashboard'
     | '/enseignant/dashboard'
     | '/enseignant/etudiants'
     | '/enseignant/evaluations'
@@ -208,6 +219,7 @@ export interface FileRouteTypes {
     | '/etudiant'
     | '/login'
     | '/register'
+    | '/admin/dashboard'
     | '/enseignant/dashboard'
     | '/enseignant/etudiants'
     | '/enseignant/evaluations'
@@ -222,7 +234,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   EnseignantRoute: typeof EnseignantRouteWithChildren
   EtudiantRoute: typeof EtudiantRouteWithChildren
   LoginRoute: typeof LoginRoute
@@ -343,8 +355,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnseignantDashboardRouteImport
       parentRoute: typeof EnseignantRoute
     }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminDashboardRoute: typeof AdminDashboardRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminDashboardRoute: AdminDashboardRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface EnseignantRouteChildren {
   EnseignantDashboardRoute: typeof EnseignantDashboardRoute
@@ -388,7 +417,7 @@ const EtudiantRouteWithChildren = EtudiantRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   EnseignantRoute: EnseignantRouteWithChildren,
   EtudiantRoute: EtudiantRouteWithChildren,
   LoginRoute: LoginRoute,
