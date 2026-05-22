@@ -21,6 +21,7 @@ import { Route as EtudiantProjetRouteImport } from './routes/etudiant.projet'
 import { Route as EtudiantEvaluationsRouteImport } from './routes/etudiant.evaluations'
 import { Route as EtudiantDashboardRouteImport } from './routes/etudiant.dashboard'
 import { Route as EnseignantSujetsRouteImport } from './routes/enseignant.sujets'
+import { Route as EnseignantEtudiantsRouteImport } from './routes/enseignant.etudiants'
 import { Route as EnseignantDashboardRouteImport } from './routes/enseignant.dashboard'
 
 const RegisterRoute = RegisterRouteImport.update({
@@ -83,6 +84,11 @@ const EnseignantSujetsRoute = EnseignantSujetsRouteImport.update({
   path: '/sujets',
   getParentRoute: () => EnseignantRoute,
 } as any)
+const EnseignantEtudiantsRoute = EnseignantEtudiantsRouteImport.update({
+  id: '/etudiants',
+  path: '/etudiants',
+  getParentRoute: () => EnseignantRoute,
+} as any)
 const EnseignantDashboardRoute = EnseignantDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
+  '/enseignant/etudiants': typeof EnseignantEtudiantsRoute
   '/enseignant/sujets': typeof EnseignantSujetsRoute
   '/etudiant/dashboard': typeof EtudiantDashboardRoute
   '/etudiant/evaluations': typeof EtudiantEvaluationsRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
+  '/enseignant/etudiants': typeof EnseignantEtudiantsRoute
   '/enseignant/sujets': typeof EnseignantSujetsRoute
   '/etudiant/dashboard': typeof EtudiantDashboardRoute
   '/etudiant/evaluations': typeof EtudiantEvaluationsRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/enseignant/dashboard': typeof EnseignantDashboardRoute
+  '/enseignant/etudiants': typeof EnseignantEtudiantsRoute
   '/enseignant/sujets': typeof EnseignantSujetsRoute
   '/etudiant/dashboard': typeof EtudiantDashboardRoute
   '/etudiant/evaluations': typeof EtudiantEvaluationsRoute
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/enseignant/dashboard'
+    | '/enseignant/etudiants'
     | '/enseignant/sujets'
     | '/etudiant/dashboard'
     | '/etudiant/evaluations'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/enseignant/dashboard'
+    | '/enseignant/etudiants'
     | '/enseignant/sujets'
     | '/etudiant/dashboard'
     | '/etudiant/evaluations'
@@ -175,6 +186,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/enseignant/dashboard'
+    | '/enseignant/etudiants'
     | '/enseignant/sujets'
     | '/etudiant/dashboard'
     | '/etudiant/evaluations'
@@ -278,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnseignantSujetsRouteImport
       parentRoute: typeof EnseignantRoute
     }
+    '/enseignant/etudiants': {
+      id: '/enseignant/etudiants'
+      path: '/etudiants'
+      fullPath: '/enseignant/etudiants'
+      preLoaderRoute: typeof EnseignantEtudiantsRouteImport
+      parentRoute: typeof EnseignantRoute
+    }
     '/enseignant/dashboard': {
       id: '/enseignant/dashboard'
       path: '/dashboard'
@@ -290,11 +309,13 @@ declare module '@tanstack/react-router' {
 
 interface EnseignantRouteChildren {
   EnseignantDashboardRoute: typeof EnseignantDashboardRoute
+  EnseignantEtudiantsRoute: typeof EnseignantEtudiantsRoute
   EnseignantSujetsRoute: typeof EnseignantSujetsRoute
 }
 
 const EnseignantRouteChildren: EnseignantRouteChildren = {
   EnseignantDashboardRoute: EnseignantDashboardRoute,
+  EnseignantEtudiantsRoute: EnseignantEtudiantsRoute,
   EnseignantSujetsRoute: EnseignantSujetsRoute,
 }
 
