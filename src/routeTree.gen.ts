@@ -20,6 +20,7 @@ import { Route as EtudiantRapportRouteImport } from './routes/etudiant.rapport'
 import { Route as EtudiantProjetRouteImport } from './routes/etudiant.projet'
 import { Route as EtudiantEvaluationsRouteImport } from './routes/etudiant.evaluations'
 import { Route as EtudiantDashboardRouteImport } from './routes/etudiant.dashboard'
+import { Route as EnseignantDashboardRouteImport } from './routes/enseignant.dashboard'
 
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
@@ -76,14 +77,20 @@ const EtudiantDashboardRoute = EtudiantDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => EtudiantRoute,
 } as any)
+const EnseignantDashboardRoute = EnseignantDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => EnseignantRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/enseignant': typeof EnseignantRoute
+  '/enseignant': typeof EnseignantRouteWithChildren
   '/etudiant': typeof EtudiantRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/enseignant/dashboard': typeof EnseignantDashboardRoute
   '/etudiant/dashboard': typeof EtudiantDashboardRoute
   '/etudiant/evaluations': typeof EtudiantEvaluationsRoute
   '/etudiant/projet': typeof EtudiantProjetRoute
@@ -93,10 +100,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/enseignant': typeof EnseignantRoute
+  '/enseignant': typeof EnseignantRouteWithChildren
   '/etudiant': typeof EtudiantRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/enseignant/dashboard': typeof EnseignantDashboardRoute
   '/etudiant/dashboard': typeof EtudiantDashboardRoute
   '/etudiant/evaluations': typeof EtudiantEvaluationsRoute
   '/etudiant/projet': typeof EtudiantProjetRoute
@@ -107,10 +115,11 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
-  '/enseignant': typeof EnseignantRoute
+  '/enseignant': typeof EnseignantRouteWithChildren
   '/etudiant': typeof EtudiantRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/enseignant/dashboard': typeof EnseignantDashboardRoute
   '/etudiant/dashboard': typeof EtudiantDashboardRoute
   '/etudiant/evaluations': typeof EtudiantEvaluationsRoute
   '/etudiant/projet': typeof EtudiantProjetRoute
@@ -126,6 +135,7 @@ export interface FileRouteTypes {
     | '/etudiant'
     | '/login'
     | '/register'
+    | '/enseignant/dashboard'
     | '/etudiant/dashboard'
     | '/etudiant/evaluations'
     | '/etudiant/projet'
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/etudiant'
     | '/login'
     | '/register'
+    | '/enseignant/dashboard'
     | '/etudiant/dashboard'
     | '/etudiant/evaluations'
     | '/etudiant/projet'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/etudiant'
     | '/login'
     | '/register'
+    | '/enseignant/dashboard'
     | '/etudiant/dashboard'
     | '/etudiant/evaluations'
     | '/etudiant/projet'
@@ -162,7 +174,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
-  EnseignantRoute: typeof EnseignantRoute
+  EnseignantRoute: typeof EnseignantRouteWithChildren
   EtudiantRoute: typeof EtudiantRouteWithChildren
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
@@ -247,8 +259,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EtudiantDashboardRouteImport
       parentRoute: typeof EtudiantRoute
     }
+    '/enseignant/dashboard': {
+      id: '/enseignant/dashboard'
+      path: '/dashboard'
+      fullPath: '/enseignant/dashboard'
+      preLoaderRoute: typeof EnseignantDashboardRouteImport
+      parentRoute: typeof EnseignantRoute
+    }
   }
 }
+
+interface EnseignantRouteChildren {
+  EnseignantDashboardRoute: typeof EnseignantDashboardRoute
+}
+
+const EnseignantRouteChildren: EnseignantRouteChildren = {
+  EnseignantDashboardRoute: EnseignantDashboardRoute,
+}
+
+const EnseignantRouteWithChildren = EnseignantRoute._addFileChildren(
+  EnseignantRouteChildren,
+)
 
 interface EtudiantRouteChildren {
   EtudiantDashboardRoute: typeof EtudiantDashboardRoute
@@ -273,7 +304,7 @@ const EtudiantRouteWithChildren = EtudiantRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
-  EnseignantRoute: EnseignantRoute,
+  EnseignantRoute: EnseignantRouteWithChildren,
   EtudiantRoute: EtudiantRouteWithChildren,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
