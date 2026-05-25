@@ -87,7 +87,7 @@ function EnsDash() {
                     {isMyStudent && (
                       <div className="mt-3 bg-destructive/10 text-destructive rounded-xl p-2.5 text-xs flex gap-2">
                         <AlertTriangle className="w-4 h-4 shrink-0" />
-                        <span>⚠️ Votre étudiant — Vous ne pouvez pas l'évaluer en tant que jury.</span>
+                        <span>Votre étudiant — Vous ne pouvez pas l'évaluer en tant que jury.</span>
                       </div>
                     )}
                     <div className="mt-4 flex gap-2">

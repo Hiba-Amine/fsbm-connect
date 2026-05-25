@@ -5,6 +5,7 @@ import {
   GraduationCap, Home, Search, FolderOpen, Upload, Star, BookOpen, Users,
   Link as LinkIcon, Calendar, DoorOpen, FileText, Shield, Bell, LogOut, Menu, X, ChevronDown
 } from "lucide-react";
+import fsbmLogo from "@/assets/fsbm-logo.png";
 import { ChatWidget } from "./ChatWidget";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -77,9 +78,7 @@ function Shell({ nav, children }: { nav: NavItem[]; children: ReactNode }) {
       <aside className={`fixed lg:sticky top-0 left-0 z-40 w-[260px] h-screen bg-sidebar border-r border-sidebar-border flex flex-col transition-transform ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
         <div className="h-16 flex items-center justify-between px-5 border-b border-sidebar-border">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center">
-              <GraduationCap className="w-5 h-5 text-primary-foreground" />
-            </div>
+            <img src={fsbmLogo} alt="FSBM" className="h-9 w-auto" />
             <span className="font-bold text-lg text-primary">PFE Connect</span>
           </Link>
           <button className="lg:hidden p-1.5 rounded-lg hover:bg-accent" onClick={() => setMobileOpen(false)}>

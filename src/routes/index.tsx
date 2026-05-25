@@ -6,6 +6,7 @@ import {
   Sparkles, Quote, Menu
 } from "lucide-react";
 import { useState } from "react";
+import fsbmLogo from "@/assets/fsbm-logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -22,9 +23,7 @@ export const Route = createFileRoute("/")({
 function Logo() {
   return (
     <Link to="/" className="flex items-center gap-2.5">
-      <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-md">
-        <GraduationCap className="w-5 h-5 text-primary-foreground" />
-      </div>
+      <img src={fsbmLogo} alt="FSBM" className="h-10 w-auto" />
       <span className="font-bold text-xl text-primary">PFE Connect</span>
     </Link>
   );
@@ -186,8 +185,8 @@ function Landing() {
         <div className="max-w-7xl mx-auto px-4 lg:px-8 grid md:grid-cols-3 gap-8 items-center">
           <div>
             <div className="flex items-center gap-2.5 mb-3">
-              <div className="w-9 h-9 rounded-full bg-primary-light flex items-center justify-center">
-                <GraduationCap className="w-5 h-5 text-white" />
+              <div className="w-9 h-9 rounded-lg bg-white flex items-center justify-center p-1">
+                <img src={fsbmLogo} alt="FSBM" className="h-full w-auto" />
               </div>
               <span className="font-bold text-lg">PFE Connect</span>
             </div>
