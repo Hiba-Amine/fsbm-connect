@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { GraduationCap, BookOpen, Info, ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
+import fsbmLogo from "@/assets/fsbm-logo.png";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -33,9 +34,7 @@ function RegisterPage() {
     <div className="min-h-screen bg-primary-gradient flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-lg animate-slide-up">
         <Link to="/" className="flex flex-col items-center mb-5">
-          <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center mb-2">
-            <GraduationCap className="w-6 h-6 text-primary-foreground" />
-          </div>
+          <img src={fsbmLogo} alt="FSBM" className="h-12 w-auto mb-2" />
           <span className="font-bold text-lg text-primary">PFE Connect</span>
         </Link>
 

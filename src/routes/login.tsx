@@ -2,7 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { GraduationCap, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import fsbmLogo from "@/assets/fsbm-logo.png";
 import { useState } from "react";
 import { useAuth } from "@/lib/context";
 import { toast } from "sonner";
@@ -39,13 +40,11 @@ function LoginPage() {
     <div className="min-h-screen bg-primary-gradient flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-md animate-slide-up">
         <Link to="/" className="flex flex-col items-center mb-6">
-          <div className="w-14 h-14 rounded-full bg-primary flex items-center justify-center mb-3">
-            <GraduationCap className="w-7 h-7 text-primary-foreground" />
-          </div>
+          <img src={fsbmLogo} alt="FSBM" className="h-16 w-auto mb-3" />
           <span className="font-bold text-xl text-primary">PFE Connect</span>
           <span className="text-xs text-muted-foreground">Faculté des Sciences Ben M'Sik</span>
         </Link>
-        <h2 className="text-2xl font-bold text-center mb-6">Bon retour ! 👋</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">Bon retour</h2>
         <form onSubmit={handle} className="space-y-4">
           <div>
             <Label>Email</Label>
