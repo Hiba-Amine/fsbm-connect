@@ -7,6 +7,7 @@ import { GraduationCap, BookOpen, Info, ArrowLeft, ArrowRight, CheckCircle2 } fr
 import fsbmLogo from "@/assets/fsbm-logo.png";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useAuth } from "@/lib/context";
 
 export const Route = createFileRoute("/register")({
   head: () => ({ meta: [{ title: "Inscription — PFE Connect" }] }),
@@ -15,9 +16,11 @@ export const Route = createFileRoute("/register")({
 
 function RegisterPage() {
   const navigate = useNavigate();
+  const { register } = useAuth();
   const [step, setStep] = useState<1 | 2>(1);
   const [role, setRole] = useState<"etudiant" | "enseignant" | null>(null);
   const [form, setForm] = useState({ prenom: "", nom: "", email: "", password: "", confirm: "" });
+  const [extra, setExtra] = useState({ filiere: "", niveau: "", numeroEtudiant: "", grade: "", specialite: "" });
 
   const next = () => {
     if (!form.prenom || !form.nom || !form.email || !form.password) { toast.error("Veuillez remplir tous les champs"); return; }
@@ -26,8 +29,9 @@ function RegisterPage() {
   };
   const submit = () => {
     if (!role) { toast.error("Veuillez sélectionner un rôle"); return; }
-    toast.success("Compte créé avec succès !");
-    navigate({ to: "/login" });
+    const u = register({ prenom: form.prenom, nom: form.nom, email: form.email, role, ...extra });
+    toast.success("Compte créé avec succès");
+    navigate({ to: u.role === "etudiant" ? "/etudiant/dashboard" : "/enseignant/dashboard" });
   };
 
   return (
@@ -77,17 +81,19 @@ function RegisterPage() {
               <div className="mt-5 space-y-3 animate-fade-in">
                 <div>
                   <Label>Filière</Label>
-                  <Select><SelectTrigger className="mt-1.5"><SelectValue placeholder="Sélectionner" /></SelectTrigger>
+                  <Select value={extra.filiere} onValueChange={(v) => setExtra({ ...extra, filiere: v })}>
+                    <SelectTrigger className="mt-1.5"><SelectValue placeholder="Sélectionner" /></SelectTrigger>
                     <SelectContent>{["Informatique","Mathématiques","Physique","Chimie","Biologie","Géologie"].map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
                 <div>
                   <Label>Niveau</Label>
-                  <Select><SelectTrigger className="mt-1.5"><SelectValue placeholder="Sélectionner" /></SelectTrigger>
+                  <Select value={extra.niveau} onValueChange={(v) => setExtra({ ...extra, niveau: v })}>
+                    <SelectTrigger className="mt-1.5"><SelectValue placeholder="Sélectionner" /></SelectTrigger>
                     <SelectContent>{["Licence 1","Licence 2","Licence 3","Master 1","Master 2"].map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
-                <div><Label>Numéro étudiant</Label><Input className="mt-1.5" placeholder="FSBM-2025-XXX" /></div>
+                <div><Label>Numéro étudiant</Label><Input className="mt-1.5" placeholder="FSBM-2025-XXX" value={extra.numeroEtudiant} onChange={(e) => setExtra({ ...extra, numeroEtudiant: e.target.value })} /></div>
               </div>
             )}
 
@@ -95,11 +101,12 @@ function RegisterPage() {
               <div className="mt-5 space-y-3 animate-fade-in">
                 <div>
                   <Label>Grade</Label>
-                  <Select><SelectTrigger className="mt-1.5"><SelectValue placeholder="Sélectionner" /></SelectTrigger>
+                  <Select value={extra.grade} onValueChange={(v) => setExtra({ ...extra, grade: v })}>
+                    <SelectTrigger className="mt-1.5"><SelectValue placeholder="Sélectionner" /></SelectTrigger>
                     <SelectContent>{["Professeur Habilité","Professeur Assistant","Professeur Enseignement Supérieur","Professeur Agrégé"].map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
-                <div><Label>Spécialité</Label><Input className="mt-1.5" placeholder="Ex: Génie Logiciel" /></div>
+                <div><Label>Spécialité</Label><Input className="mt-1.5" placeholder="Ex: Génie Logiciel" value={extra.specialite} onChange={(e) => setExtra({ ...extra, specialite: e.target.value })} /></div>
                 <div className="bg-accent text-primary text-sm rounded-xl p-3 flex gap-2">
                   <Info className="w-4 h-4 shrink-0 mt-0.5" />
                   <span>En tant qu'enseignant, vous pourrez être désigné comme encadrant de projets ET/OU comme membre de jury par l'administration.</span>

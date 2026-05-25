@@ -6,6 +6,7 @@ interface AuthContextValue {
   currentUser: User | null;
   login: (email: string, password: string) => User | null;
   loginAs: (role: "etudiant" | "enseignant" | "admin") => User;
+  register: (data: { prenom: string; nom: string; email: string; role: "etudiant" | "enseignant"; filiere?: string; niveau?: string; numeroEtudiant?: string; grade?: string; specialite?: string }) => User;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -36,6 +37,7 @@ interface NotifContextValue {
 const NotifContext = createContext<NotifContextValue | null>(null);
 
 export function AppProviders({ children }: { children: ReactNode }) {
+  const [users, setUsers] = useState<User[]>(USERS);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [conversations, setConversations] = useState<Conversation[]>(CONVERSATIONS);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -43,15 +45,32 @@ export function AppProviders({ children }: { children: ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>(NOTIFICATIONS);
 
   const login = useCallback((email: string, _password: string) => {
-    const u = USERS.find((x) => x.email.toLowerCase() === email.toLowerCase()) ?? null;
+    const u = users.find((x) => x.email.toLowerCase() === email.toLowerCase()) ?? null;
     if (u) setCurrentUser(u);
     return u;
-  }, []);
+  }, [users]);
 
   const loginAs = useCallback((role: "etudiant" | "enseignant" | "admin") => {
-    const u = role === "etudiant" ? USERS.find(x => x.id === "u1")! : role === "enseignant" ? USERS.find(x => x.id === "e1")! : USERS.find(x => x.id === "a1")!;
+    const u = role === "etudiant" ? users.find(x => x.id === "u1")! : role === "enseignant" ? users.find(x => x.id === "e1")! : users.find(x => x.id === "a1")!;
     setCurrentUser(u);
     return u;
+  }, [users]);
+
+  const register = useCallback((data: { prenom: string; nom: string; email: string; role: "etudiant" | "enseignant"; filiere?: string; niveau?: string; numeroEtudiant?: string; grade?: string; specialite?: string }) => {
+    const prefix = data.role === "etudiant" ? "u" : "e";
+    const newUser: User = {
+      id: `${prefix}${Date.now()}`,
+      prenom: data.prenom,
+      nom: data.nom,
+      email: data.email,
+      role: data.role,
+      ...(data.role === "etudiant"
+        ? { filiere: data.filiere ?? "Informatique", niveau: data.niveau ?? "Licence 3", numeroEtudiant: data.numeroEtudiant ?? `FSBM-${new Date().getFullYear()}-NEW` }
+        : { grade: data.grade ?? "Professeur Assistant", specialite: data.specialite ?? "—", isEncadrant: false, isJury: false, encadrantFor: [], juryFor: [] }),
+    } as User;
+    setUsers((p) => [...p, newUser]);
+    setCurrentUser(newUser);
+    return newUser;
   }, []);
 
   const logout = useCallback(() => setCurrentUser(null), []);
@@ -79,7 +98,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
   const markAllRead = useCallback(() => setNotifications((p) => p.map((n) => ({ ...n, read: true }))), []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, login, loginAs, logout, isAuthenticated: !!currentUser }}>
+    <AuthContext.Provider value={{ currentUser, login, loginAs, register, logout, isAuthenticated: !!currentUser }}>
       <ChatContext.Provider value={{ conversations, activeId, setActiveId, isOpen, toggle: () => setIsOpen(o => !o), close: () => setIsOpen(false), open: () => setIsOpen(true), sendMessage, unreadCount, markRead }}>
         <NotifContext.Provider value={{ notifications, unreadCount: notifUnread, markAsRead, markAllRead }}>
           {children}
