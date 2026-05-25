@@ -5,6 +5,7 @@ import {
   GraduationCap, Home, Search, FolderOpen, Upload, Star, BookOpen, Users,
   Link as LinkIcon, Calendar, DoorOpen, FileText, Shield, Bell, LogOut, Menu, X, ChevronDown
 } from "lucide-react";
+import fsbmLogo from "@/assets/fsbm-logo.png";
 import { ChatWidget } from "./ChatWidget";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
