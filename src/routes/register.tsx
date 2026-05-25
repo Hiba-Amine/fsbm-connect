@@ -81,17 +81,19 @@ function RegisterPage() {
               <div className="mt-5 space-y-3 animate-fade-in">
                 <div>
                   <Label>Filière</Label>
-                  <Select><SelectTrigger className="mt-1.5"><SelectValue placeholder="Sélectionner" /></SelectTrigger>
+                  <Select value={extra.filiere} onValueChange={(v) => setExtra({ ...extra, filiere: v })}>
+                    <SelectTrigger className="mt-1.5"><SelectValue placeholder="Sélectionner" /></SelectTrigger>
                     <SelectContent>{["Informatique","Mathématiques","Physique","Chimie","Biologie","Géologie"].map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
                 <div>
                   <Label>Niveau</Label>
-                  <Select><SelectTrigger className="mt-1.5"><SelectValue placeholder="Sélectionner" /></SelectTrigger>
+                  <Select value={extra.niveau} onValueChange={(v) => setExtra({ ...extra, niveau: v })}>
+                    <SelectTrigger className="mt-1.5"><SelectValue placeholder="Sélectionner" /></SelectTrigger>
                     <SelectContent>{["Licence 1","Licence 2","Licence 3","Master 1","Master 2"].map(f => <SelectItem key={f} value={f}>{f}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
-                <div><Label>Numéro étudiant</Label><Input className="mt-1.5" placeholder="FSBM-2025-XXX" /></div>
+                <div><Label>Numéro étudiant</Label><Input className="mt-1.5" placeholder="FSBM-2025-XXX" value={extra.numeroEtudiant} onChange={(e) => setExtra({ ...extra, numeroEtudiant: e.target.value })} /></div>
               </div>
             )}
 
@@ -99,11 +101,12 @@ function RegisterPage() {
               <div className="mt-5 space-y-3 animate-fade-in">
                 <div>
                   <Label>Grade</Label>
-                  <Select><SelectTrigger className="mt-1.5"><SelectValue placeholder="Sélectionner" /></SelectTrigger>
+                  <Select value={extra.grade} onValueChange={(v) => setExtra({ ...extra, grade: v })}>
+                    <SelectTrigger className="mt-1.5"><SelectValue placeholder="Sélectionner" /></SelectTrigger>
                     <SelectContent>{["Professeur Habilité","Professeur Assistant","Professeur Enseignement Supérieur","Professeur Agrégé"].map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}</SelectContent>
                   </Select>
                 </div>
-                <div><Label>Spécialité</Label><Input className="mt-1.5" placeholder="Ex: Génie Logiciel" /></div>
+                <div><Label>Spécialité</Label><Input className="mt-1.5" placeholder="Ex: Génie Logiciel" value={extra.specialite} onChange={(e) => setExtra({ ...extra, specialite: e.target.value })} /></div>
                 <div className="bg-accent text-primary text-sm rounded-xl p-3 flex gap-2">
                   <Info className="w-4 h-4 shrink-0 mt-0.5" />
                   <span>En tant qu'enseignant, vous pourrez être désigné comme encadrant de projets ET/OU comme membre de jury par l'administration.</span>
