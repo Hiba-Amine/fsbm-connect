@@ -98,7 +98,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
   const markAllRead = useCallback(() => setNotifications((p) => p.map((n) => ({ ...n, read: true }))), []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, login, loginAs, logout, isAuthenticated: !!currentUser }}>
+    <AuthContext.Provider value={{ currentUser, login, loginAs, register, logout, isAuthenticated: !!currentUser }}>
       <ChatContext.Provider value={{ conversations, activeId, setActiveId, isOpen, toggle: () => setIsOpen(o => !o), close: () => setIsOpen(false), open: () => setIsOpen(true), sendMessage, unreadCount, markRead }}>
         <NotifContext.Provider value={{ notifications, unreadCount: notifUnread, markAsRead, markAllRead }}>
           {children}

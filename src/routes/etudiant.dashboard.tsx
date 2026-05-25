@@ -20,7 +20,7 @@ function Dash() {
   return (
     <div className="space-y-6">
       <div className="bg-primary-gradient rounded-2xl p-6 md:p-8 text-white shadow-lg">
-        <h2 className="text-2xl md:text-3xl font-bold">Bonjour, {currentUser.prenom}</h2>
+        <h2 className="text-2xl md:text-3xl font-bold">Bonjour, {currentUser.prenom} {currentUser.nom}</h2>
         <p className="text-white/85 mt-1">Voici un aperçu de votre projet de fin d'études</p>
       </div>
 

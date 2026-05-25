@@ -7,6 +7,7 @@ import { GraduationCap, BookOpen, Info, ArrowLeft, ArrowRight, CheckCircle2 } fr
 import fsbmLogo from "@/assets/fsbm-logo.png";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useAuth } from "@/lib/context";
 
 export const Route = createFileRoute("/register")({
   head: () => ({ meta: [{ title: "Inscription — PFE Connect" }] }),
@@ -15,9 +16,11 @@ export const Route = createFileRoute("/register")({
 
 function RegisterPage() {
   const navigate = useNavigate();
+  const { register } = useAuth();
   const [step, setStep] = useState<1 | 2>(1);
   const [role, setRole] = useState<"etudiant" | "enseignant" | null>(null);
   const [form, setForm] = useState({ prenom: "", nom: "", email: "", password: "", confirm: "" });
+  const [extra, setExtra] = useState({ filiere: "", niveau: "", numeroEtudiant: "", grade: "", specialite: "" });
 
   const next = () => {
     if (!form.prenom || !form.nom || !form.email || !form.password) { toast.error("Veuillez remplir tous les champs"); return; }
@@ -26,8 +29,9 @@ function RegisterPage() {
   };
   const submit = () => {
     if (!role) { toast.error("Veuillez sélectionner un rôle"); return; }
-    toast.success("Compte créé avec succès !");
-    navigate({ to: "/login" });
+    const u = register({ prenom: form.prenom, nom: form.nom, email: form.email, role, ...extra });
+    toast.success("Compte créé avec succès");
+    navigate({ to: u.role === "etudiant" ? "/etudiant/dashboard" : "/enseignant/dashboard" });
   };
 
   return (
