@@ -1,12 +1,13 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
 import { USERS, CONVERSATIONS, NOTIFICATIONS, type User, type Conversation, type Notification, type Message } from "./mock-data";
+import { api, tokenStore, roleToBack, roleToFront } from "./api";
 
 // ----- Auth -----
 interface AuthContextValue {
   currentUser: User | null;
-  login: (email: string, password: string) => User | null;
+  login: (email: string, password: string) => Promise<User>;
   loginAs: (role: "etudiant" | "enseignant" | "admin") => User;
-  register: (data: { prenom: string; nom: string; email: string; role: "etudiant" | "enseignant"; filiere?: string; niveau?: string; numeroEtudiant?: string; grade?: string; specialite?: string }) => User;
+  register: (data: { prenom: string; nom: string; email: string; password: string; role: "etudiant" | "enseignant"; filiere?: string; niveau?: string; numeroEtudiant?: string; grade?: string; specialite?: string }) => Promise<User>;
   logout: () => void;
   isAuthenticated: boolean;
 }
