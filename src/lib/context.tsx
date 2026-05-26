@@ -1,12 +1,13 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
 import { USERS, CONVERSATIONS, NOTIFICATIONS, type User, type Conversation, type Notification, type Message } from "./mock-data";
+import { api, tokenStore, roleToBack, roleToFront } from "./api";
 
 // ----- Auth -----
 interface AuthContextValue {
   currentUser: User | null;
-  login: (email: string, password: string) => User | null;
+  login: (email: string, password: string) => Promise<User>;
   loginAs: (role: "etudiant" | "enseignant" | "admin") => User;
-  register: (data: { prenom: string; nom: string; email: string; role: "etudiant" | "enseignant"; filiere?: string; niveau?: string; numeroEtudiant?: string; grade?: string; specialite?: string }) => User;
+  register: (data: { prenom: string; nom: string; email: string; password: string; role: "etudiant" | "enseignant"; filiere?: string; niveau?: string; numeroEtudiant?: string; grade?: string; specialite?: string }) => Promise<User>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -44,11 +45,34 @@ export function AppProviders({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>(NOTIFICATIONS);
 
-  const login = useCallback((email: string, _password: string) => {
-    const u = users.find((x) => x.email.toLowerCase() === email.toLowerCase()) ?? null;
-    if (u) setCurrentUser(u);
+  const buildUserFromAuth = useCallback((resp: { id?: number; email: string; nom: string; role: "ADMIN" | "ETUDIANT" | "ENCADRANT" }, extra?: { filiere?: string; niveau?: string; numeroEtudiant?: string; grade?: string; specialite?: string }) => {
+    const front = roleToFront(resp.role);
+    const parts = (resp.nom || "").trim().split(/\s+/);
+    const prenom = parts[0] ?? "";
+    const nom = parts.slice(1).join(" ") || parts[0] || "";
+    const u: User = {
+      id: resp.id != null ? String(resp.id) : `${front[0]}${Date.now()}`,
+      prenom,
+      nom,
+      email: resp.email,
+      role: front,
+      ...(front === "etudiant"
+        ? { filiere: extra?.filiere ?? "Informatique", niveau: extra?.niveau ?? "Licence 3", numeroEtudiant: extra?.numeroEtudiant ?? `FSBM-${new Date().getFullYear()}-NEW` }
+        : front === "enseignant"
+          ? { grade: extra?.grade ?? "Professeur Assistant", specialite: extra?.specialite ?? "—", isEncadrant: false, isJury: false, encadrantFor: [], juryFor: [] }
+          : {}),
+    } as User;
     return u;
-  }, [users]);
+  }, []);
+
+  const login = useCallback(async (email: string, password: string) => {
+    const resp = await api.login(email, password);
+    tokenStore.set(resp.token);
+    const u = buildUserFromAuth(resp);
+    setUsers((p) => (p.some((x) => x.email.toLowerCase() === u.email.toLowerCase()) ? p : [...p, u]));
+    setCurrentUser(u);
+    return u;
+  }, [buildUserFromAuth]);
 
   const loginAs = useCallback((role: "etudiant" | "enseignant" | "admin") => {
     const u = role === "etudiant" ? users.find(x => x.id === "u1")! : role === "enseignant" ? users.find(x => x.id === "e1")! : users.find(x => x.id === "a1")!;
@@ -56,24 +80,25 @@ export function AppProviders({ children }: { children: ReactNode }) {
     return u;
   }, [users]);
 
-  const register = useCallback((data: { prenom: string; nom: string; email: string; role: "etudiant" | "enseignant"; filiere?: string; niveau?: string; numeroEtudiant?: string; grade?: string; specialite?: string }) => {
-    const prefix = data.role === "etudiant" ? "u" : "e";
-    const newUser: User = {
-      id: `${prefix}${Date.now()}`,
-      prenom: data.prenom,
-      nom: data.nom,
+  const register = useCallback(async (data: { prenom: string; nom: string; email: string; password: string; role: "etudiant" | "enseignant"; filiere?: string; niveau?: string; numeroEtudiant?: string; grade?: string; specialite?: string }) => {
+    const resp = await api.register({
+      nom: `${data.prenom} ${data.nom}`.trim(),
       email: data.email,
-      role: data.role,
-      ...(data.role === "etudiant"
-        ? { filiere: data.filiere ?? "Informatique", niveau: data.niveau ?? "Licence 3", numeroEtudiant: data.numeroEtudiant ?? `FSBM-${new Date().getFullYear()}-NEW` }
-        : { grade: data.grade ?? "Professeur Assistant", specialite: data.specialite ?? "—", isEncadrant: false, isJury: false, encadrantFor: [], juryFor: [] }),
-    } as User;
-    setUsers((p) => [...p, newUser]);
-    setCurrentUser(newUser);
-    return newUser;
+      password: data.password,
+      role: roleToBack(data.role),
+    });
+    tokenStore.set(resp.token);
+    const u = buildUserFromAuth(resp, data);
+    setUsers((p) => [...p, u]);
+    setCurrentUser(u);
+    return u;
+  }, [buildUserFromAuth]);
+
+  const logout = useCallback(() => {
+    tokenStore.clear();
+    setCurrentUser(null);
   }, []);
 
-  const logout = useCallback(() => setCurrentUser(null), []);
 
   const sendMessage = useCallback((conversationId: string, text: string) => {
     setConversations((prev) =>

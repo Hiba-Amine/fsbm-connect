@@ -27,11 +27,19 @@ function RegisterPage() {
     if (form.password !== form.confirm) { toast.error("Les mots de passe ne correspondent pas"); return; }
     setStep(2);
   };
-  const submit = () => {
+  const [loading, setLoading] = useState(false);
+  const submit = async () => {
     if (!role) { toast.error("Veuillez sélectionner un rôle"); return; }
-    const u = register({ prenom: form.prenom, nom: form.nom, email: form.email, role, ...extra });
-    toast.success("Compte créé avec succès");
-    navigate({ to: u.role === "etudiant" ? "/etudiant/dashboard" : "/enseignant/dashboard" });
+    setLoading(true);
+    try {
+      const u = await register({ prenom: form.prenom, nom: form.nom, email: form.email, password: form.password, role, ...extra });
+      toast.success("Compte créé avec succès");
+      navigate({ to: u.role === "etudiant" ? "/etudiant/dashboard" : "/enseignant/dashboard" });
+    } catch (err: any) {
+      toast.error(err?.message || "Échec de l'inscription");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -116,7 +124,7 @@ function RegisterPage() {
 
             <div className="flex gap-2 mt-6">
               <Button variant="outline" onClick={() => setStep(1)} className="flex-1"><ArrowLeft className="w-4 h-4 mr-2" />Retour</Button>
-              <Button onClick={submit} className="flex-1 bg-primary hover:bg-[var(--primary-hover)]"><CheckCircle2 className="w-4 h-4 mr-2" />Créer mon compte</Button>
+              <Button onClick={submit} disabled={loading} className="flex-1 bg-primary hover:bg-[var(--primary-hover)]"><CheckCircle2 className="w-4 h-4 mr-2" />{loading ? "Création..." : "Créer mon compte"}</Button>
             </div>
           </>
         )}
