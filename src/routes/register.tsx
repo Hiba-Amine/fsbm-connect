@@ -124,7 +124,7 @@ function RegisterPage() {
 
             <div className="flex gap-2 mt-6">
               <Button variant="outline" onClick={() => setStep(1)} className="flex-1"><ArrowLeft className="w-4 h-4 mr-2" />Retour</Button>
-              <Button onClick={submit} className="flex-1 bg-primary hover:bg-[var(--primary-hover)]"><CheckCircle2 className="w-4 h-4 mr-2" />Créer mon compte</Button>
+              <Button onClick={submit} disabled={loading} className="flex-1 bg-primary hover:bg-[var(--primary-hover)]"><CheckCircle2 className="w-4 h-4 mr-2" />{loading ? "Création..." : "Créer mon compte"}</Button>
             </div>
           </>
         )}
