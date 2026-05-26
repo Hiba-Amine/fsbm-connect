@@ -27,11 +27,19 @@ function RegisterPage() {
     if (form.password !== form.confirm) { toast.error("Les mots de passe ne correspondent pas"); return; }
     setStep(2);
   };
-  const submit = () => {
+  const [loading, setLoading] = useState(false);
+  const submit = async () => {
     if (!role) { toast.error("Veuillez sélectionner un rôle"); return; }
-    const u = register({ prenom: form.prenom, nom: form.nom, email: form.email, role, ...extra });
-    toast.success("Compte créé avec succès");
-    navigate({ to: u.role === "etudiant" ? "/etudiant/dashboard" : "/enseignant/dashboard" });
+    setLoading(true);
+    try {
+      const u = await register({ prenom: form.prenom, nom: form.nom, email: form.email, password: form.password, role, ...extra });
+      toast.success("Compte créé avec succès");
+      navigate({ to: u.role === "etudiant" ? "/etudiant/dashboard" : "/enseignant/dashboard" });
+    } catch (err: any) {
+      toast.error(err?.message || "Échec de l'inscription");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
