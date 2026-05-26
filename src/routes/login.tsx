@@ -73,7 +73,7 @@ function LoginPage() {
               </button>
             </div>
           </div>
-          <Button type="submit" className="w-full bg-primary hover:bg-[var(--primary-hover)]" size="lg">Se connecter</Button>
+          <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-[var(--primary-hover)]" size="lg">{loading ? "Connexion..." : "Se connecter"}</Button>
         </form>
         <div className="my-5 flex items-center gap-3">
           <div className="flex-1 h-px bg-border" />
