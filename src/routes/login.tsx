@@ -20,20 +20,30 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
 
-  const doLogin = (u: { role: string } | null) => {
-    if (!u) { toast.error("Identifiants invalides"); return; }
-    toast.success("Connexion réussie");
-    navigate({ to: u.role === "etudiant" ? "/etudiant/dashboard" : u.role === "enseignant" ? "/enseignant/dashboard" : "/admin/dashboard" });
+  const [loading, setLoading] = useState(false);
+
+  const goTo = (role: string) => {
+    navigate({ to: role === "etudiant" ? "/etudiant/dashboard" : role === "enseignant" ? "/enseignant/dashboard" : "/admin/dashboard" });
   };
 
-  const handle = (e: React.FormEvent) => {
+  const handle = async (e: React.FormEvent) => {
     e.preventDefault();
-    doLogin(login(email, password));
+    setLoading(true);
+    try {
+      const u = await login(email, password);
+      toast.success("Connexion réussie");
+      goTo(u.role);
+    } catch (err: any) {
+      toast.error(err?.message || "Identifiants invalides");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const quick = (role: "etudiant" | "enseignant" | "admin") => {
     const u = loginAs(role);
-    doLogin(u);
+    toast.success("Connexion (démo) réussie");
+    goTo(u.role);
   };
 
   return (
