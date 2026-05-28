@@ -42,7 +42,6 @@ function LoginPage() {
   };
 
 
-  };
 
   return (
     <div className="min-h-screen bg-primary-gradient flex items-center justify-center p-4">
