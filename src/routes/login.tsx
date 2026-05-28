@@ -14,7 +14,8 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
-  const { login, loginAs } = useAuth();
+  const { login } = useAuth();
+
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,11 +41,7 @@ function LoginPage() {
     }
   };
 
-  const quick = (role: "etudiant" | "enseignant" | "admin") => {
-    const u = loginAs(role);
-    toast.success("Connexion (démo) réussie");
-    goTo(u.role);
-  };
+
 
   return (
     <div className="min-h-screen bg-primary-gradient flex items-center justify-center p-4">
@@ -75,16 +72,8 @@ function LoginPage() {
           </div>
           <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-[var(--primary-hover)]" size="lg">{loading ? "Connexion..." : "Se connecter"}</Button>
         </form>
-        <div className="my-5 flex items-center gap-3">
-          <div className="flex-1 h-px bg-border" />
-          <span className="text-xs text-muted-foreground">ou accès rapide</span>
-          <div className="flex-1 h-px bg-border" />
-        </div>
-        <div className="grid grid-cols-3 gap-2">
-          <button onClick={() => quick("etudiant")} className="text-xs px-3 py-2 rounded-full bg-accent text-primary font-medium hover:bg-[var(--primary)] hover:text-primary-foreground transition-colors">Étudiant</button>
-          <button onClick={() => quick("enseignant")} className="text-xs px-3 py-2 rounded-full bg-accent text-primary font-medium hover:bg-[var(--primary)] hover:text-primary-foreground transition-colors">Enseignant</button>
-          <button onClick={() => quick("admin")} className="text-xs px-3 py-2 rounded-full bg-accent text-primary font-medium hover:bg-[var(--primary)] hover:text-primary-foreground transition-colors">Admin</button>
-        </div>
+
+
         <div className="mt-6 text-center text-sm text-muted-foreground">
           Pas encore de compte ? <Link to="/register" className="text-primary-light font-semibold hover:underline">S'inscrire</Link>
         </div>
