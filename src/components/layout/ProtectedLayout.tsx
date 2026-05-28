@@ -1,9 +1,9 @@
 import { Link, useNavigate, useRouterState, Outlet, Navigate } from "@tanstack/react-router";
 import { type ReactNode, useState } from "react";
-import { useAuth, useNotifications } from "@/lib/context";
+import { useAuth } from "@/lib/context";
 import {
   GraduationCap, Home, Search, FolderOpen, Upload, Star, BookOpen, Users,
-  Link as LinkIcon, Calendar, DoorOpen, FileText, Shield, Bell, LogOut, Menu, X, ChevronDown
+  Link as LinkIcon, Calendar, DoorOpen, FileText, Shield, LogOut, Menu, X, ChevronDown
 } from "lucide-react";
 import fsbmLogo from "@/assets/fsbm-logo.png";
 import { ChatWidget } from "./ChatWidget";
@@ -12,9 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
-type NavItem = { to: string; label: string; icon: any };
 
 const STUDENT_NAV: NavItem[] = [
   { to: "/etudiant/dashboard", label: "Tableau de bord", icon: Home },
