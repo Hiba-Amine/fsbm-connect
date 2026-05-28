@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react";
 import { USERS, CONVERSATIONS, NOTIFICATIONS, type User, type Conversation, type Notification, type Message } from "./mock-data";
-import { api, tokenStore, roleToBack, roleToFront } from "./api";
+import { api, tokenStore, decodeJwt, type BackendRole } from "./api";
 
 // ----- Auth -----
 interface AuthContextValue {
@@ -45,21 +45,21 @@ export function AppProviders({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>(NOTIFICATIONS);
 
-  const buildUserFromAuth = useCallback((resp: { id?: number; email: string; nom: string; role: "ADMIN" | "ETUDIANT" | "ENCADRANT" }, extra?: { filiere?: string; niveau?: string; numeroEtudiant?: string; grade?: string; specialite?: string }) => {
-    const front = roleToFront(resp.role);
-    const parts = (resp.nom || "").trim().split(/\s+/);
+  // Construit un objet User local à partir des infos disponibles (token + formulaire)
+  const buildUser = useCallback((args: { token: string; email: string; nom: string; role: BackendRole; extra?: { filiere?: string; niveau?: string; numeroEtudiant?: string; grade?: string; specialite?: string } }) => {
+    const parts = (args.nom || "").trim().split(/\s+/);
     const prenom = parts[0] ?? "";
     const nom = parts.slice(1).join(" ") || parts[0] || "";
     const u: User = {
-      id: resp.id != null ? String(resp.id) : `${front[0]}${Date.now()}`,
+      id: `${args.role[0]}${Date.now()}`,
       prenom,
       nom,
-      email: resp.email,
-      role: front,
-      ...(front === "etudiant"
-        ? { filiere: extra?.filiere ?? "Informatique", niveau: extra?.niveau ?? "Licence 3", numeroEtudiant: extra?.numeroEtudiant ?? `FSBM-${new Date().getFullYear()}-NEW` }
-        : front === "enseignant"
-          ? { grade: extra?.grade ?? "Professeur Assistant", specialite: extra?.specialite ?? "—", isEncadrant: false, isJury: false, encadrantFor: [], juryFor: [] }
+      email: args.email,
+      role: args.role,
+      ...(args.role === "etudiant"
+        ? { filiere: args.extra?.filiere ?? "Informatique", niveau: args.extra?.niveau ?? "Licence 3", numeroEtudiant: args.extra?.numeroEtudiant ?? `FSBM-${new Date().getFullYear()}-NEW` }
+        : args.role === "enseignant"
+          ? { grade: args.extra?.grade ?? "Professeur Assistant", specialite: args.extra?.specialite ?? "—", isEncadrant: false, isJury: false, encadrantFor: [], juryFor: [] }
           : {}),
     } as User;
     return u;
@@ -68,11 +68,15 @@ export function AppProviders({ children }: { children: ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     const resp = await api.login(email, password);
     tokenStore.set(resp.token);
-    const u = buildUserFromAuth(resp);
+    const claims = decodeJwt(resp.token) || {};
+    // Le backend ne renvoie que le token : on déduit le rôle depuis les claims, sinon "etudiant" par défaut
+    const role: BackendRole = (claims.role || claims.type || "etudiant") as BackendRole;
+    const subEmail = claims.sub || email;
+    const u = buildUser({ token: resp.token, email: subEmail, nom: subEmail.split("@")[0], role });
     setUsers((p) => (p.some((x) => x.email.toLowerCase() === u.email.toLowerCase()) ? p : [...p, u]));
     setCurrentUser(u);
     return u;
-  }, [buildUserFromAuth]);
+  }, [buildUser]);
 
   const loginAs = useCallback((role: "etudiant" | "enseignant" | "admin") => {
     const u = role === "etudiant" ? users.find(x => x.id === "u1")! : role === "enseignant" ? users.find(x => x.id === "e1")! : users.find(x => x.id === "a1")!;
@@ -81,18 +85,22 @@ export function AppProviders({ children }: { children: ReactNode }) {
   }, [users]);
 
   const register = useCallback(async (data: { prenom: string; nom: string; email: string; password: string; role: "etudiant" | "enseignant"; filiere?: string; niveau?: string; numeroEtudiant?: string; grade?: string; specialite?: string }) => {
+    const fullNom = `${data.prenom} ${data.nom}`.trim();
     const resp = await api.register({
-      nom: `${data.prenom} ${data.nom}`.trim(),
+      nom: fullNom,
       email: data.email,
       password: data.password,
-      role: roleToBack(data.role),
+      role: data.role,
+      ...(data.role === "enseignant"
+        ? { grade: data.grade, specialite: data.specialite }
+        : { matricule: data.numeroEtudiant, niveau: data.niveau }),
     });
     tokenStore.set(resp.token);
-    const u = buildUserFromAuth(resp, data);
+    const u = buildUser({ token: resp.token, email: data.email, nom: fullNom, role: data.role, extra: data });
     setUsers((p) => [...p, u]);
     setCurrentUser(u);
     return u;
-  }, [buildUserFromAuth]);
+  }, [buildUser]);
 
   const logout = useCallback(() => {
     tokenStore.clear();
