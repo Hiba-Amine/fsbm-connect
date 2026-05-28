@@ -162,49 +162,5 @@ function Shell({ nav, children }: { nav: NavItem[]; children: ReactNode }) {
   );
 }
 
-function NotificationBell() {
-  const { notifications, unreadCount, markAsRead, markAllRead } = useNotifications();
-  const iconFor = (t: string) => {
-    const map: Record<string, string> = { rapport: "📄", soutenance: "📅", jury: "⚖️", validation: "✅", message: "💬" };
-    return map[t] ?? "🔔";
-  };
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button className="relative p-2 rounded-xl hover:bg-accent">
-          <Bell className="w-5 h-5" />
-          {unreadCount > 0 && (
-            <span className="absolute top-1 right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center">
-              {unreadCount}
-            </span>
-          )}
-        </button>
-      </PopoverTrigger>
-      <PopoverContent align="end" className="w-[360px] p-0">
-        <div className="flex items-center justify-between px-4 py-3 border-b">
-          <h3 className="font-semibold text-sm">Notifications</h3>
-          <button className="text-xs text-primary-light hover:underline" onClick={markAllRead}>Tout marquer comme lu</button>
-        </div>
-        <div className="max-h-[380px] overflow-y-auto">
-          {notifications.map((n) => (
-            <button
-              key={n.id}
-              onClick={() => markAsRead(n.id)}
-              className={`w-full text-left flex gap-3 px-4 py-3 border-b last:border-0 hover:bg-accent/50 transition-colors ${!n.read ? "bg-accent/30" : ""}`}
-            >
-              <div className="w-9 h-9 rounded-full bg-accent text-primary flex items-center justify-center text-base">{iconFor(n.type)}</div>
-              <div className="flex-1 min-w-0">
-                <div className="text-sm">{n.text}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">{n.at}</div>
-              </div>
-              {!n.read && <span className="w-2 h-2 rounded-full bg-primary-light mt-2" />}
-            </button>
-          ))}
-        </div>
-        <div className="px-4 py-2.5 border-t text-center">
-          <a className="text-xs text-primary-light hover:underline">Voir toutes les notifications</a>
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-}
+
+
