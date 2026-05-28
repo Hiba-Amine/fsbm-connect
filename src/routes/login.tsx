@@ -41,10 +41,7 @@ function LoginPage() {
     }
   };
 
-  const quick = (role: "etudiant" | "enseignant" | "admin") => {
-    const u = loginAs(role);
-    toast.success("Connexion (démo) réussie");
-    goTo(u.role);
+
   };
 
   return (
