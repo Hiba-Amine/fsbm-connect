@@ -131,7 +131,8 @@ function Shell({ nav, children }: { nav: NavItem[]; children: ReactNode }) {
             <h1 className="text-lg font-semibold text-foreground">{title}</h1>
           </div>
           <div className="flex items-center gap-2">
-            <NotificationBell />
+            {currentUser && (
+
             {currentUser && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
