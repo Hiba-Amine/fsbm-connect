@@ -13,6 +13,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
+type NavItem = { to: string; label: string; icon: any };
 
 const STUDENT_NAV: NavItem[] = [
   { to: "/etudiant/dashboard", label: "Tableau de bord", icon: Home },
