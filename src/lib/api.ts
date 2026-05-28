@@ -1,5 +1,5 @@
-// API client for the Spring Boot backend (gestion-pfe)
-// Base URL configurable via VITE_API_URL, fallback to localhost:8080.
+// API client pour le backend Spring Boot gestion-pfe
+// Base URL configurable via VITE_API_URL (défaut: http://localhost:8080)
 
 const BASE_URL =
   (import.meta as any).env?.VITE_API_URL?.replace(/\/$/, "") ||
@@ -7,21 +7,28 @@ const BASE_URL =
 
 const TOKEN_KEY = "pfe_token";
 
-export type BackendRole = "ADMIN" | "ETUDIANT" | "ENCADRANT";
+// Le backend utilise des rôles en minuscules (enum RoleName: admin|etudiant|enseignant)
+export type BackendRole = "admin" | "etudiant" | "enseignant";
 export type FrontRole = "admin" | "etudiant" | "enseignant";
 
-export const roleToFront = (r: BackendRole): FrontRole =>
-  r === "ADMIN" ? "admin" : r === "ETUDIANT" ? "etudiant" : "enseignant";
-export const roleToBack = (r: FrontRole): BackendRole =>
-  r === "admin" ? "ADMIN" : r === "etudiant" ? "ETUDIANT" : "ENCADRANT";
+export const roleToFront = (r: BackendRole): FrontRole => r;
+export const roleToBack = (r: FrontRole): BackendRole => r;
 
 export interface AuthResponse {
   token: string;
-  id?: number;
-  email: string;
+}
+
+export interface RegisterPayload {
   nom: string;
-  role: BackendRole;
-  message?: string;
+  email: string;
+  password: string;
+  role: BackendRole; // etudiant | enseignant (admin interdit côté backend)
+  // Spécifique enseignant
+  grade?: string;
+  specialite?: string;
+  // Spécifique étudiant
+  matricule?: string;
+  niveau?: string;
 }
 
 export const tokenStore = {
@@ -33,6 +40,18 @@ export const tokenStore = {
     if (typeof window !== "undefined") localStorage.removeItem(TOKEN_KEY);
   },
 };
+
+/** Décode la payload d'un JWT (sans vérifier la signature) pour récupérer le sub (email) */
+export function decodeJwt(token: string): { sub?: string; exp?: number; [k: string]: any } | null {
+  try {
+    const part = token.split(".")[1];
+    if (!part) return null;
+    const json = atob(part.replace(/-/g, "+").replace(/_/g, "/"));
+    return JSON.parse(decodeURIComponent(escape(json)));
+  } catch {
+    return null;
+  }
+}
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const headers: Record<string, string> = {
@@ -57,19 +76,19 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     data = { message: text };
   }
   if (!res.ok) {
-    throw new Error(data?.message || `Erreur ${res.status}`);
+    throw new Error(data?.message || data?.error || `Erreur ${res.status}`);
   }
   return data as T;
 }
 
 export const api = {
   login: (email: string, password: string) =>
-    request<AuthResponse>("/api/auth/login", {
+    request<AuthResponse>("/api/v1/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
     }),
-  register: (payload: { nom: string; email: string; password: string; role: BackendRole }) =>
-    request<AuthResponse>("/api/auth/register", {
+  register: (payload: RegisterPayload) =>
+    request<AuthResponse>("/api/v1/auth/register", {
       method: "POST",
       body: JSON.stringify(payload),
     }),
