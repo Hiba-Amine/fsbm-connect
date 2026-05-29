@@ -112,6 +112,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
   }, [buildUser]);
 
   const logout = useCallback(() => {
+    api.logout().catch(() => {});
     tokenStore.clear();
     setCurrentUser(null);
   }, []);
