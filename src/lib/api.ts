@@ -81,6 +81,13 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   return data as T;
 }
 
+export interface MeResponse {
+  id: number;
+  nom: string;
+  email: string;
+  type: BackendRole | string;
+}
+
 export const api = {
   login: (email: string, password: string) =>
     request<AuthResponse>("/api/v1/auth/login", {
@@ -92,4 +99,6 @@ export const api = {
       method: "POST",
       body: JSON.stringify(payload),
     }),
+  me: () => request<MeResponse>("/api/v1/users/me"),
+  logout: () => request<string>("/api/v1/auth/logout", { method: "POST" }),
 };

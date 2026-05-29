@@ -68,11 +68,20 @@ export function AppProviders({ children }: { children: ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     const resp = await api.login(email, password);
     tokenStore.set(resp.token);
-    const claims = decodeJwt(resp.token) || {};
-    // Le backend ne renvoie que le token : on déduit le rôle depuis les claims, sinon "etudiant" par défaut
-    const role: BackendRole = (claims.role || claims.type || "etudiant") as BackendRole;
-    const subEmail = claims.sub || email;
-    const u = buildUser({ token: resp.token, email: subEmail, nom: subEmail.split("@")[0], role });
+    // Le token ne contient que l'email. On récupère le profil via /users/me pour avoir le rôle réel.
+    let role: BackendRole = "etudiant";
+    let nom = email.split("@")[0];
+    let realEmail = email;
+    try {
+      const me = await api.me();
+      role = (me.type as BackendRole) || "etudiant";
+      nom = me.nom || nom;
+      realEmail = me.email || email;
+    } catch {
+      const claims = decodeJwt(resp.token) || {};
+      realEmail = claims.sub || email;
+    }
+    const u = buildUser({ token: resp.token, email: realEmail, nom, role });
     setUsers((p) => (p.some((x) => x.email.toLowerCase() === u.email.toLowerCase()) ? p : [...p, u]));
     setCurrentUser(u);
     return u;
@@ -103,6 +112,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
   }, [buildUser]);
 
   const logout = useCallback(() => {
+    api.logout().catch(() => {});
     tokenStore.clear();
     setCurrentUser(null);
   }, []);
