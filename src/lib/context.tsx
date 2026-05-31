@@ -87,11 +87,9 @@ export function AppProviders({ children }: { children: ReactNode }) {
     return u;
   }, [buildUser]);
 
-  const loginAs = useCallback((role: "etudiant" | "enseignant" | "admin") => {
-    const u = role === "etudiant" ? users.find(x => x.id === "u1")! : role === "enseignant" ? users.find(x => x.id === "e1")! : users.find(x => x.id === "a1")!;
-    setCurrentUser(u);
-    return u;
-  }, [users]);
+  const loginAs = useCallback((_role: "etudiant" | "enseignant" | "admin") => {
+    throw new Error("loginAs n'est plus supporté — utilisez login(email, password).");
+  }, []);
 
   const register = useCallback(async (data: { prenom: string; nom: string; email: string; password: string; role: "etudiant" | "enseignant"; filiere?: string; niveau?: string; numeroEtudiant?: string; grade?: string; specialite?: string }) => {
     const fullNom = `${data.prenom} ${data.nom}`.trim();

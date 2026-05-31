@@ -70,6 +70,11 @@ function LoginPage() {
               </button>
             </div>
           </div>
+          <div className="flex justify-end -mt-2">
+            <Link to="/forgot-password" className="text-sm text-primary-light font-medium hover:underline">
+              Mot de passe oublié ?
+            </Link>
+          </div>
           <Button type="submit" disabled={loading} className="w-full bg-primary hover:bg-[var(--primary-hover)]" size="lg">{loading ? "Connexion..." : "Se connecter"}</Button>
         </form>
 
@@ -77,6 +82,7 @@ function LoginPage() {
         <div className="mt-6 text-center text-sm text-muted-foreground">
           Pas encore de compte ? <Link to="/register" className="text-primary-light font-semibold hover:underline">S'inscrire</Link>
         </div>
+
       </div>
     </div>
   );
