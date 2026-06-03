@@ -20,6 +20,20 @@ function EtudiantsTeacher() {
   const selProj = PROJETS.find(p => p.etudiantId === selected);
   const selRap = RAPPORTS.filter(r => r.projetId === selProj?.id);
 
+  if (mine.length === 0) {
+    return (
+      <Card className="p-10 rounded-2xl shadow-md text-center">
+        <div className="mx-auto w-12 h-12 rounded-full bg-accent flex items-center justify-center mb-3">
+          <FileText className="w-6 h-6 text-primary" />
+        </div>
+        <div className="font-semibold mb-1">Aucun étudiant à afficher</div>
+        <p className="text-sm text-muted-foreground max-w-md mx-auto">
+          La liste de vos étudiants encadrés sera chargée depuis le backend dès que l'endpoint dédié (ex. <code className="px-1 py-0.5 rounded bg-muted">GET /api/v1/enseignants/me/etudiants</code>) sera connecté.
+        </p>
+      </Card>
+    );
+  }
+
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
       {mine.map((s) => {
