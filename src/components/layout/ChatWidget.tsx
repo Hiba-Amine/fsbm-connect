@@ -74,7 +74,16 @@ export function ChatWidget() {
                 </div>
               </div>
               <div className="flex-1 overflow-y-auto">
-                {filtered.map((c) => (
+                {filtered.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-center px-6 py-10 text-muted-foreground">
+                    <MessageCircle className="w-10 h-10 mb-3 opacity-40" />
+                    <p className="text-sm font-medium text-foreground">Aucune conversation</p>
+                    <p className="text-xs mt-1">
+                      {q ? "Aucun résultat pour votre recherche." : "Vos messages avec les autres utilisateurs apparaîtront ici."}
+                    </p>
+                  </div>
+                ) : (
+                  filtered.map((c) => (
                   <button
                     key={c.id}
                     onClick={() => { setActiveId(c.id); markRead(c.id); }}
@@ -97,7 +106,8 @@ export function ChatWidget() {
                       </div>
                     </div>
                   </button>
-                ))}
+                  ))
+                )}
               </div>
             </div>
           ) : (
